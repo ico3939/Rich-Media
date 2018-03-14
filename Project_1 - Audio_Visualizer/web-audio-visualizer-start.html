@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet"> 
+	<title>Web Audio Visualizer</title>
+	<style>
+        body {
+             background: #C5BFA9;
+             font-family: 'Titillium Web', verdana, sans serif;
+            color: #4B483F;
+            padding-top: 0px;
+            padding-bottom: 30px;
+        }
+        
+        #title{
+            height: auto;
+            margin-bottom: 10px;
+            padding-left: 15px;
+        }
+        h1 {
+            text-shadow: 3px 3px 0 #918B7D;
+        }
+        
+        h2 {
+            margin: 0px;
+        }
+        
+        #audio-viz {
+            width: 750px;
+            height:520px;
+            float: right;
+            margin:15px;
+        }
+
+        #audio-viz audio {
+            
+            padding-top: 5px;
+            padding-left: 240px;
+            clear:both;
+        }
+        #canvas {
+            float:right;
+            width:inherit;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #controls{
+            width: 35%;
+            margin-left:15px;
+            margin-top:10px;
+            float:left;
+        }
+        
+        #track-controls, #visual-filters, #audio-filters, #canvas-effects {
+            background-color: #D7D1B9;
+            padding: 5px;
+            margin-bottom: 8px;
+        }
+
+        #filters {
+            display: inline;
+        }
+        
+        #status, #name {
+            display: inline-block;
+            margin:0;
+            margin-left:15px;
+            margin-right: 8px;
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #D7D1B9;
+            font-weight: bold;
+            font-size: 13.5pt;
+            float: right;
+        }
+        
+        #name {
+            float: left;
+        }
+
+	</style>
+    
+	<script src="js/main.js"></script>
+    
+</head>
+<body>
+    <div id = "title"><h1>NIER AUTOMATA AUDIO VIZ</h1></div>
+    <div id = "container">
+
+        <div id = "audio-viz">
+            <canvas id="canvas" width="640" height="400"></canvas>
+            <audio controls loop></audio>
+        </div>
+
+
+        <div style="display:none;">
+            <img id="emil" src="media/emil.png" width = "33%" height="33%">
+        </div>
+        <div id="controls">
+            <div id = "track-controls">
+                <span><label>Track: 
+                <select id="trackSelect" >
+                    <option value="wretched-weaponry" selected="selected">Wretched Weaponry</option>
+                    <option value="birth-of-a-wish">Birth of a Wish</option>
+                </select>
+                </label>
+                <label><span id = "intensity-text">Intensity: </span>
+                    <select id="intensity">
+                        <option value="quiet" selected="selected">Quiet</option>
+                        <option value="medium">Medium</option>
+                        <option value="dynamic">Dynamic</option>
+                    </select>
+                </label>
+                <label id="vocals">
+                    <input id="vocal-check" type="checkbox">
+                    <span>Add Vocals </span>
+                </label>
+                <label><span id = "version-text">Version: </span>
+                    <select id="version">
+                        <option value="instrumental" selected="selected">Instrumental</option>
+                        <option value="vocal">Vocal</option>
+                        <option value="become-as-gods">Become as Gods</option>
+                        <option value="this-cannot-continue">This Cannot Continue</option>
+                    </select>
+                </label>
+                <button id="fsButton">Go Full Screen</button><br></span>
+            </div>
+            
+            
+            <div id="visual-filters">
+                <h2>VISUAL FILTERS</h2>
+                <input id="glitch" type="checkbox">
+                <span>Glitch |</span>
+                <input id="invert" type="checkbox">
+                <span>Invert |</span>
+                <input id="blur" type="checkbox">
+                <span>Blur</span>
+            </div>
+            
+            <div id="audio-filters">
+                <h2>AUDIO FILTERS</h2>
+                <label>
+                    Delay/Reverb: 
+                    <input id="delaySlider" type="range" min="0.0" max="1.0" value="0" step="0.1">
+                </label>
+                <label>
+                    Pan Left or Right: 
+                    <span><br>L</span><input id="panSlider" type="range" min="-2.0" max="2.0" value="0" step="0.2"><span>R</span>
+                </label>
+            </div>
+            
+            
+            <div id="canvas-effects">
+                <h2>CANVAS EFFECTS</h2>
+                <label>Change Circle Radius</label>
+                <input id="radiusSlider" type ="range" min ="0.1" max="1.0" step ="0.05" value ="0.5"/>
+                <div><span>Data Stream Type</span>
+                    <select id="dataStreamSelect">
+                        <option value="frequency-range" selected="selected">Frequency Range</option>
+                        <option value="waveform">WaveForm</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <p id="status">???</p>
+        <p id="name">Ian Oliver</p>
+    </div>
+
+</body>
+</html>
