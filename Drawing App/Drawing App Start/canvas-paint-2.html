@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Canvas Paint App</title>
+	 <style>
+      body {
+         background: #eeeeee;
+         font-family: tahoma, verdana, sans serif;
+      }
+
+      #mainCanvas {
+         background: #ffffff;
+         position:absolute;
+         z-index: 0;
+         left: 10px;
+         top: 10px;
+         box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+      }
+         
+     #topCanvas {
+         background: rgba(0,0,0,0);
+         position: absolute;
+         left:10px;
+         top:10px;
+         z-index: 1;
+         cursor: pointer;
+     }
+      
+      
+       #controls {
+         position: absolute;
+          z-index: 2;
+         left: 25px;
+         top: 25px;
+      }
+      
+      label{
+      	font-size: 12px;
+      	margin-right:0.75em;
+      }
+      
+    </style>
+    
+	<script>
+	"use strict";
+	window.onload = init;
+	
+	// GLOBALS
+	var canvas,ctx,dragging=false,lineWidth,strokeStyle;
+    var currentTool;
+    var fillStyle; // used by rectangle tool
+    var origin; // used by rectangle and line tools
+    var topCanvas;
+    var topCtx;
+        
+	
+	// CONSTANTS
+	var DEFAULT_LINE_WIDTH = 3;
+    var DEFAULT_STROKE_STYLE = "red";
+    var DEFAULT_FILL_STYLE = "blue";
+    var TOOL_PENCIL = "toolPencil";
+    var TOOL_RECTANGLE = "toolRectangle";
+    var TOOL_LINE = "toolLine";
+	
+	// FUNCTIONS
+	function init(){
+		// initialize some globals
+		canvas = document.querySelector('#mainCanvas');
+		ctx = canvas.getContext('2d');
+		lineWidth = DEFAULT_LINE_WIDTH;
+        strokeStyle = DEFAULT_STROKE_STYLE;
+        fillStyle = DEFAULT_FILL_STYLE;
+        currentTool = TOOL_PENCIL;
+        origin = {}; // empty object;
+        topCanvas = document.querySelector('#topCanvas');
+        topCtx = topCanvas.getContext('2d');
+        
+        //set initial properties of the graphics context
+		topCtx.lineWidth = ctx.lineWidth = lineWidth;
+        topCtx.strokeStyle = ctx.strokeStyle = strokeStyle;
+        topCtx.lineCap = ctx.lineCap = "round"; // "butt","round","square" (default "butt")
+        topCtx.lineJoin = ctx.lineJoin = "round"; // "round", "bevel", "miter" (default "miter")
+        
+        
+        drawGrid(ctx, 'lightgray', 10, 10);
+        
+        
+        // Hook up event listeners
+        canvas.onmousedown = doMousedown;
+        canvas.onmousemove = doMousemove;
+        canvas.onmouseup = doMouseup;
+        canvas.onmouseout = doMouseout;
+        topCanvas.onmousedown = doMousedown;
+        topCanvas.onmousemove = doMousemove;
+        topCanvas.onmouseup = doMouseup;
+        topCanvas.onmouseout = doMouseout;
+		
+        
+        document.querySelector('#lineWidthChooser').onchange = doLineWidthChange;
+         document.querySelector('#strokeStyleChooser').onchange = doStrokeStyleChange;
+        document.querySelector('#clearButton').onclick = doClear;
+        document.querySelector('#toolChooser').onchange = function(e) {
+            currentTool = e.target.value;
+            console.log("currentTool=" + currentTool);
+        };
+        document.querySelector('#fillStyleChooser').onchange = function(e) {
+            fillStyle = e.target.value;
+            console.log("fillStyle=" + fillStyle);
+        };
+	}
+	
+	
+	// EVENT CALLBACK FUNCTIONS
+	function doMousedown(e){
+		console.log(e.type);
+        
+        dragging = true;
+        
+        //get location of mouse in canvas coordinates
+        var mouse = getMouse(e);
+
+        switch(currentTool) {
+            case TOOL_PENCIL:
+                ctx.beginPath();
+                ctx.moveTo(mouse.x, mouse.y);
+                break;
+            
+            case TOOL_RECTANGLE:
+                origin.x = mouse.x;
+                origin.y = mouse.y;
+                break;
+                
+            case TOOL_LINE: 
+                origin.x = mouse.x;
+                origin.y = mouse.y;
+                break;
+
+        }
+	}
+ 
+ 	function doMousemove(e) {
+ 		// bail out if the mouse button is not down
+        if(! dragging) {return;}
+        
+        // get location of mouse in canvas coordinates
+        var mouse = getMouse(e);
+        
+        switch(currentTool) {
+            case TOOL_PENCIL:
+                //set ctx.strokeStyle and ctx.lineWidth to correct values
+                ctx.strokeStyle = strokeStyle;
+                ctx.lineWidth = lineWidth;
+                
+                // draw a line to x,y of mouse
+                ctx.lineTo(mouse.x, mouse.y);
+                
+                ctx.stroke(); // stroke the line
+                break;
+            
+            case TOOL_RECTANGLE:
+                /*These adjustments keep the rectangle tool working even if the user drags from right to left. Recall that canvas will draw a rectangle left to right with the ctx.fillRect() and ctx.strokeRect() functions
+                */
+                var x = Math.min(mouse.x, origin.x);
+                var y = Math.min(mouse.y, origin.y);
+                var w = Math.abs(mouse.x - origin.x);
+                var h = Math.abs(mouse.y - origin.y);
+                
+                // fill and stroke the rectangle
+                topCtx.strokeStyle = strokeStyle;
+                topCtx.fillStyle = fillStyle;
+                topCtx.lineWidth = lineWidth;
+                
+                //erase old rectangle
+                clearTopCanvas();
+                
+                // draw new rectangle
+                topCtx.fillRect(x, y, w, h);
+                topCtx.strokeRect(x, y, w, h);
+                
+                break;
+                
+            case TOOL_LINE:
+                topCtx.strokeStyle = strokeStyle;
+                topCtx.lineWidth = lineWidth;
+                
+                clearTopCanvas();
+                
+                topCtx.beginPath();
+                topCtx.moveTo(origin.x, origin.y);
+                topCtx.lineTo(mouse.x, mouse.y);
+                topCtx.stroke();
+                
+                break;
+        }
+	}
+	
+	function doMouseup(e) {
+		console.log(e.type);
+        switch(currentTool) {
+            case TOOL_PENCIL:
+                ctx.closePath();
+                break;
+            case TOOL_RECTANGLE:
+                if(dragging) {
+                    ctx.drawImage(topCanvas, 0, 0);
+                    clearTopCanvas();
+                }
+                break;
+            case TOOL_LINE:
+                if(dragging) {
+                    ctx.drawImage(topCanvas, 0, 0);
+                    clearTopCanvas();
+                }
+                break;
+        }
+        
+        dragging = false;
+	}
+	
+	// if the user drags out of the canvas
+	function doMouseout(e) {
+		console.log(e.type);
+        switch(currentTool) {
+            case TOOL_PENCIL:
+                ctx.closePath();
+                break;
+            case TOOL_RECTANGLE:
+                if(dragging) {
+                    // cancel the drawing
+                    clearTopCanvas();
+                }
+                break;
+            case TOOL_LINE:
+                if(dragging) {
+                    // cancel the drawing
+                    clearTopCanvas();
+                }
+                break;
+        }
+        
+        dragging = false;
+	}
+	
+	function doClear(){
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		drawGrid(ctx,'lightgray', 10, 10);
+
+	}
+        
+    function doLineWidthChange(e) {
+        lineWidth = e.target.value;
+    }
+        
+    function doStrokeStyleChange(e) {
+        strokeStyle = e.target.value;
+    }
+        
+    function clearTopCanvas() {
+        topCtx.clearRect(0,0,topCtx.canvas.width,topCtx.canvas.height);
+    }
+	
+	// UTILITY FUNCTIONS
+	/*
+	These utility functions do not depend on any global variables being in existence, 
+	and produce no "side effects" such as changing ctx state variables.
+	They are "pure functions" - see: http://en.wikipedia.org/wiki/Pure_function
+	*/
+	
+	// Function Name: getMouse()
+	// returns mouse position in local coordinate system of element
+	// Author: Tony Jefferson
+	// Last update: 3/1/2014
+	function getMouse(e){
+		var mouse = {}
+		mouse.x = e.pageX - e.target.offsetLeft;
+		mouse.y = e.pageY - e.target.offsetTop;
+		return mouse;
+	}
+	
+	/*
+	Function Name: drawGrid()
+	Description: Fills the entire canvas with a grid
+	Last update: 9/1/2014
+	*/
+	function drawGrid(ctx, color, cellWidth, cellHeight){
+		// save the current drawing state as it existed before this function was called
+		ctx.save()
+		
+		// set some drawing state variables
+		ctx.strokeStyle = color;
+		ctx.fillStyle = '#ffffff';
+		ctx.lineWidth = 0.5;
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		
+		// vertical lines all set!
+		for (var x = cellWidth + 0.5; x < ctx.canvas.width; x += cellWidth) {
+			ctx.beginPath();
+			ctx.moveTo(x, 0);
+			ctx.lineTo(x, ctx.canvas.height);
+			ctx.stroke();
+		}
+		
+		// draws horizontal lines
+        for (var y = cellHeight + 0.5; y < ctx.canvas.height; y += cellHeight) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(ctx.canvas.width, y);
+            ctx.stroke();
+        }
+		
+		
+		// restore the drawing state
+		ctx.restore();
+	}
+	
+	
+	</script>
+</head>
+<body>
+    <canvas id="topCanvas" width="700" height="500">Get a real browser!</canvas>  
+	<canvas id="mainCanvas" width="700" height="500">
+	Get a real browser!
+	</canvas>
+
+    
+	
+	<div id="controls">
+		<label>Tool:
+			<select id="toolChooser">
+				<option value="toolPencil">Pencil</option>
+                <option value="toolRectangle">Rectangle</option>
+                <option value="toolLine">Line</option>
+    		</select>
+    	</label>
+    	
+    	<label>Line Width: 
+			<select id="lineWidthChooser">
+				<option value="1">1</option>
+				<option value="2">2</option>
+        		<option value="3" selected>3</option>
+        		<option value="4">4</option>
+				<option value="5">5</option>
+        		<option value="6">6</option>
+        		<option value="7">7</option>
+				<option value="8">8</option>
+        		<option value="9">9</option>
+        		<option value="10">10</option>
+    		</select>
+    	</label>
+        <label>
+            Stroke Style: 
+            <select id="strokeStyleChooser">
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+            </select>
+        </label>
+        <label>
+            Fill Style: 
+            <select id="fillStyleChooser">
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+            </select>
+        </label>
+    	
+    	
+    	<span><input id="clearButton" type="button" value="Clear"/></span>
+    </div>
+
+</body>
+</html>

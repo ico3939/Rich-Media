@@ -1,0 +1,22 @@
+<movies>
+	<movie rating="R">
+		<title>The Shining</title>
+		<starring>Jack Nicholson</starring>
+	</movie>
+	<movie rating="PG">
+		<title>Airplane!</title>
+		<starring>Lesley Nielson</starring>
+	</movie>
+	<movie rating="PG-13">
+		<title>Titanic</title>
+		<starring>Leonardo DiCaprio</starring>
+	</movie>
+	<movie rating="R">
+		<title>Roadhouse</title>
+		<starring>Patrick Swayze</starring>
+	</movie>
+	<movie rating="PG">
+		<title>The Iron Giant</title>
+		<starring>Vin Diesel</starring>
+	</movie>
+</movies>

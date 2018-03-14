@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Object Literal Example 1</title>
+        <meta charset="utf-8">
+		<script>
+            "use strict";
+			
+            var Car2 = function() {
+                this.wheels = 4;
+                this.make = 'Toyota';
+                this.speed = 0;
+                
+                this.increaseSpeed = function(amt) {
+                    this.speed += amt;
+                };
+                
+                console.dir('im firing');
+            };
+            
+            var car = {
+                wheel: 4,
+                make:'Toyota',
+                speed: 0,
+                increaseSpeed: function(amt) {
+                    this.speed +=amt;
+                }
+            };
+            
+			function init() {
+                car.increaseSpeed(5);
+                car.increaseSpeed(5);
+                //console.dir(car);
+                
+                var myCar = new Car2();
+                console.dir(myCar);
+                myCar.increaseSpeed(19);
+			}
+			
+			window.onload = init;
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

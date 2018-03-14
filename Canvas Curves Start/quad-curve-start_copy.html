@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Quad Bézier Curve Start</title>
+	<style type="text/css">
+	canvas{
+		border:1px solid gray;
+	}
+	*{
+		font-family: tahoma, verdana, sans-serif;
+	}
+	</style>
+	<script>
+		// #0 - in this class we will always use ECMAScript 5's "strict" mode
+		// See what 'use strict' does here:
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+		'use strict';
+		
+		// #1 call the init function after the pages loads
+		window.onload = init;
+		var ctx;
+		function init(){
+			console.log("page loaded!");
+			// #2 Now that the page has loaded, start drawing!
+			
+			// A - canvas variable points at <canvas> tag
+			var canvas = document.querySelector('canvas');
+			
+			// B - the ctx variable points at a "2D drawing context"
+			ctx = canvas.getContext('2d');
+			
+		}
+		
+		
+		function drawQuadCurve(ctx,x1,y1,cpX,cpY,x2,y2,color,closePath,debug){
+
+		}
+		
+		function getRandomInt(min, max) {
+  			return Math.floor(Math.random() * (max - min)) + min;
+		}
+		
+		function getRandomColor(){
+			function getByte(){
+				return 55 + Math.round(Math.random() * 200);
+			}
+			return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
+		}
+	</script>
+</head>
+<body>
+	<canvas width="640" height="480">
+		Get a real browser!
+	</canvas>
+	<div>
+		<h2>Canvas Quadratic Bézier Curves</h2>
+		<p>In vector graphics, Bézier curves are used to model smooth curves that can be scaled indefinitely. 
+		In the canvas API, quadratic Bézier curves consist of a start point, an end point, and a control point.  
+		The points of the curve are calculated by interpolation involving these 3 points.</p>
+		
+		<p>For an interactive example where you can move these points with the mouse to create your own curves, and generate the code that creates these codes, see the "bezier curve playgrounds" folder included with the SG-2 files.</p>
+		
+		<p>
+		In canvas, we use <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/quadraticCurveTo"><code>quadraticCurveTo(cpx, cpy, x, y)</code></a> to draw curves with a single control point, and <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/bezierCurveTo"><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</code> to draw curves with 2 control points.</a>  
+		</p>
+		Other handy links:
+		<ul>
+			<li><a href="http://www.sitepoint.com/html5-canvas-draw-bezier-curves/">http://www.sitepoint.com/html5-canvas-draw-bezier-curves/</a></li>
+			<li><a href="http://www.sitepoint.com/html5-canvas-draw-quadratic-curves/">http://www.sitepoint.com/html5-canvas-draw-quadratic-curves/</a></li>
+			<li><a href="https://en.wikipedia.org/wiki/Bézier_curve">https://en.wikipedia.org/wiki/Bézier_curve</a></li>
+			<li><a href="http://mathworld.wolfram.com/QuadraticCurve.html">http://mathworld.wolfram.com/QuadraticCurve.html</a></li>
+			<li><a href="http://stackoverflow.com/questions/5634460/quadratic-bezier-curve-calculate-point">http://stackoverflow.com/questions/5634460/quadratic-bezier-curve-calculate-point</a></li>
+			<li><a href="http://mathworld.wolfram.com/QuadraticCurve.html">http://mathworld.wolfram.com/QuadraticCurve.html</a></li>
+			<li><a href="http://blogs.sitepointstatic.com/examples/tech/canvas-curves/quadratic-curve.html">http://blogs.sitepointstatic.com/examples/tech/canvas-curves/quadratic-curve.html</a></li>
+		</ul>
+	</div>
+</body>
+</html>

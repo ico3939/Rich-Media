@@ -1,0 +1,12 @@
+{
+  "name": "maps-node-project",
+  "version": "1.0.0",
+  "description": "A project for a Rich Media practice exercise involving setting up nodes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "test": "echo \"No Tests\""
+  },
+  "author": "Ian Oliver",
+  "license": "UNLICENSED"
+}

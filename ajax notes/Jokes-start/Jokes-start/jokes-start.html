@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>XHR XML Example</title>
+	<style>
+		*{
+			font-family:tahoma,verdana,sans-serif;
+		}
+        .joke {
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+	</style>
+	<script>
+	
+	"use strict";
+	
+	(function(){
+		window.onload = init;
+		
+		function init(){
+			document.querySelector('#mybutton').onclick = loadData;
+		}
+		
+		function loadData(){
+			var xhr = new XMLHttpRequest();
+			var allJokes =[];
+			xhr.onload = function(){
+				var xml = xhr.responseXML;
+				debugger;
+				allJokes = xml.querySelectorAll('joke');
+				document.querySelector('#content').innerHTML = "There are " + allJokes.length + " jokes!";
+			}
+            
+        xhr.onload = function(){
+            //create a section to hold our content
+            var section = document.createElement('section');
+            
+            //create heading for the section
+            var h2Jokes = document.createElement('h2');
+            h2Jokes.textContent = 'Here are the Jokes!';
+            
+            //add the heading to our new content section
+            section.appendChild(h2Jokes);
+            
+            var xml = xhr.responseXML;
+            // 1) Get an array of all the <joke> elements
+            var allJokes = xml.querySelectorAll('joke');
+            
+            // 2) loop through the joke elements
+            for(var i = 0; i<allJokes.length; i++){
+                // 3) grab the current <joke>
+                var joke = allJokes[i];
+                
+                // 4) get the <question> element of that <joke>
+                // you can also use the .innerHTML property
+                var question = joke.querySelector('question').firstChild.nodeValue;
+                
+                //5) get the <answer> element of that <joke>
+                // you can also use the .innerHTML property
+                var answer = joke.querySelector('answer').firstChild.nodeValue;
+                
+                // 6) get the rating attribute of that <joke>
+                var rating = joke.getAttribute('rating');
+                
+                //create a div for this joke
+                var div = document.createElement('div');
+                // add a joke class for styling
+                div.classList.add('joke');
+                
+                //create an h3 to hold our question
+                var h3 = document.createElement('h3');
+                // set the text of our h3 to the question
+                h3.textContent = question;
+                //add the h3 to our joke div
+                div.appendChild(h3);
+                
+                //create element to hold our answer
+                var p1 = document.createElement('p');
+                // create an emphasis tag to hold our joke answer
+                var em = document.createElement('em');
+                //set the em to our joke answer
+                em.textContent = answer;
+                //add the em to our answer paragraph
+                p1.appendChild(em);
+                //add our joke paragraph to our joke div
+                div.appendChild(p1);
+                
+                //create a section paragraph to hold our rating
+                var p2 = document.createElement('p');
+                // set the text of the second paragraph to our rating value
+                p2.textContent = 'Rating = ' + rating;
+                // add our section paragraph to our joke div
+                div.appendChild(p2);
+                
+                //append this joke div to our overall joke container
+                section.appendChild(div);
+                // end of for loop
+            }
+            
+            // 8) Update the #content div
+            // grab the content div
+            var content = document.querySelector('#content');
+            // clear the current HTML contents of the content div
+            content.innerHTML = "";
+            // add our jokes section to the content div
+            content.appendChild(section);
+        }// end of xhr onload
+			
+			var url = "jokes-data.xml";
+			xhr.open('GET',url,true);
+			// try to prevent browser caching by sending a header to the server
+			xhr.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2010 00:00:00 GMT");
+			xhr.send();
+		}
+		
+		
+	
+	}())
+	</script>
+</head>
+<body>
+	<h1>Jokes!</h1>
+	<p><button id='mybutton'>Fetch Data</button></p>
+	<div id='content'></div>
+	
+</body>
+</html>
