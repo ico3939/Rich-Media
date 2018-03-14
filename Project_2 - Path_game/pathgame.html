@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Nosifer|UnifrakturCook:700|Oswald:500" rel="stylesheet"> 
+	<style>
+        body {
+            background-color: #0a1010;
+        }
+		canvas{
+            border:1px solid slategray;
+            display: block;
+            width: auto;
+            margin: auto;
+            z-index: 0;
+        }
+        
+        #audioControls{display:none;}
+        
+	</style>
+	<title>Dungeon Delver's Deathtrap</title>
+</head>
+<body>
+    <div style="display:none;">
+        <img id="brick-back" src="media/sprites/brick-back.png">
+        <img id="brick-front" src="media/sprites/brick-front.png">
+        <img id="adventurer" src="media/sprites/adventurer.png">
+        <img id="torch" src="media/sprites/torch.png">
+        <img id="skull-ball" src="media/sprites/skull-ball.png">
+        <img id="arrow-up" src="media/sprites/arrow-up.png">
+        <img id="arrow-down" src="media/sprites/arrow-down.png">
+        <img id="arrow-left" src="media/sprites/arrow-left.png">
+        <img id="arrow-right" src="media/sprites/arrow-right.png">
+        <img id="spike-down" src="media/sprites/spike-up.png">
+        <img id="spike-up" src="media/sprites/spike-down.png">
+        <img id="spike-right" src="media/sprites/spike-left.png">
+        <img id="spike-left" src="media/sprites/spike-right.png">
+        
+    </div>
+    <canvas id="gameCanvas">
+        Get a real browser!
+    </canvas>
+	
+    <section id="audioControls">
+        <audio id="bgAudio" src="media/audio/background.mp3" controls loop></audio>
+    </section>
+    <script src='js/astar.js'></script>
+    <script src='js/utilities.js'></script>
+    <script src='js/sound.js'></script>
+    <script src='js/keys.js'></script>
+    <script src='js/emitter.js'></script>
+    <script src='js/loader.js'></script>
+    <script src='js/main.js'></script>
+</body>
+</html>
